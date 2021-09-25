@@ -1,0 +1,9 @@
+digits: Landing directory for image collection
+data: Contains three directories: training, testing, validation, which each 
+	contain 10 directories labeled from 0 - 9.
+	
+fix_images.py: Runs on the capturing device; greyscales the images, then resizes
+	the images to 28x28 pixels, then saves the images to large binary file. The
+	format of this binary file is simple: the greyscaled image pixels are stored
+	serially, 784 bytes each.
+	
