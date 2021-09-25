@@ -8,7 +8,7 @@ then
     exit
 fi
 
-if ! [ -d $1 ]
+if ! [ -d digits/$1 ]
 then
     echo "$1 Must be a numeric directory."
     exit
