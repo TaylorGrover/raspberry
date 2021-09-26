@@ -1,6 +1,6 @@
 #! /data/data/com.termux/files/usr/bin/sh
 
-OLDDIR=/storage/emulated/0/DCIM/digits
+OLDDIR=/storage/emulated/0/DCIM/
 
 if [ $# -ne 1 ]
 then
@@ -14,4 +14,4 @@ then
     exit
 fi
 
-mv $OLDDIR/* digits/$1
+mv $OLDDIR/$1/* digits/$1

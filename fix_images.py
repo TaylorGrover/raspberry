@@ -2,6 +2,7 @@ import numpy as np
 import os
 import PIL.Image as Image
 import sys
+import time
 
 def shrink_image(img):
     return img.resize(28, 28)
@@ -39,13 +40,14 @@ def main():
     ## The numeric suffix + 1 will be the starting position of the new images
     for tmp in temp_files:
         numeric_suffix += 1
-        with Image.open(landing_dir + tmp) as raw_img:
+        with Image.open(landing_dir + label + "/" + tmp) as raw_img:
             grey_array = greyscale(raw_img)
             resized_img = Image.fromarray(grey_array).resize((28, 28), Image.BICUBIC)
             name = "data/greyscale/" + label + "/" + label + "_" + str(numeric_suffix) + ".png"
             print(name)
             resized_img.convert("RGB").save(name)
-        os.remove(landing_dir + tmp)
+        os.remove(landing_dir + label + "/" + tmp)
+        time.sleep(.01)
 
 if __name__ == "__main__":
     main()
