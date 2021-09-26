@@ -22,13 +22,12 @@ def main():
     # Images will resized and labeled and greyscaled from this directory, then the smaller
     # copies will be moved to the appropriate directories. 
     landing_dir = "digits/"
-    temp_files = os.listdir(landing_dir)
-    print(temp_files)
+    temp_files = os.listdir(landing_dir + label)
     
     ## If the label isn't a valid directory, exit.
-    """if not os.path.isdir(label):
-        print("Invalid argument.")
-        sys.exit(1)"""
+    if not os.path.isdir(landing_dir + label):
+        print("Invalid digit.")
+        sys.exit(1)
 
     ## Check the selected "label" directory for existing images files. Obtain last image name
     imgfiles = os.listdir("data/greyscale/" + label)

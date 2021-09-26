@@ -7,3 +7,5 @@ fix_images.py: Runs on the capturing device; greyscales the images, then resizes
 	format of this binary file is simple: the greyscaled image pixels are stored
 	serially, 784 bytes each.
 	
+At a later stage, the greyscale png files will be stuffed into a binary file 
+which will be used for easy data extraction.
