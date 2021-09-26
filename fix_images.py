@@ -7,6 +7,10 @@ import time
 def shrink_image(img):
     return img.resize(28, 28)
 
+def get_largest_suffix(imgfiles):
+    suffixes = [int(imgfiles[i].split("_")[1].split(".")[0]) for i in range(len(imgfiles))]
+    return max(suffixes)
+
 def greyscale(img):
     grey = np.array([0.2126, 0.7152, 0.0722])
     return np.array(img).dot(grey)
@@ -30,10 +34,10 @@ def main():
         print("Invalid digit.")
         sys.exit(1)
 
-    ## Check the selected "label" directory for existing images files. Obtain last image name
+    ## Check the selected "label" directory for existing images files. Obtain largest filename suffix
     imgfiles = os.listdir("data/greyscale/" + label)
     if len(imgfiles) > 0:
-        numeric_suffix = int(imgfiles[-1].split("_")[1].split(".")[0])
+        numeric_suffix = get_largest_suffix(imgfiles)
     else:
         numeric_suffix = 0
 
@@ -47,6 +51,7 @@ def main():
             print(name)
             resized_img.convert("RGB").save(name)
         os.remove(landing_dir + label + "/" + tmp)
+        # Prevent program crashing on mobile device
         time.sleep(.01)
 
 if __name__ == "__main__":

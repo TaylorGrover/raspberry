@@ -9,3 +9,13 @@ fix_images.py: Runs on the capturing device; greyscales the images, then resizes
 	
 At a later stage, the greyscale png files will be stuffed into a binary file 
 which will be used for easy data extraction.
+
+Potential issues with training on makeshift dataset:
+	∙ Too much variation for sparse data
+		- Luminescence 
+		- Spatial Position
+		- Orientation
+		- Geometry of written digit
+		- Background noise
+		- Image capture distance
+		- Digit shading
