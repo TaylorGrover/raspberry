@@ -12,8 +12,7 @@ def get_largest_suffix(imgfiles):
     return max(suffixes)
 
 def greyscale(img):
-    grey = np.array([0.2126, 0.7152, 0.0722])
-    return np.array(img).dot(grey)
+    return np.array(img.convert("L"))
 
 def main():
     if len(sys.argv) != 2:
