@@ -14,4 +14,6 @@ then
     exit
 fi
 
-mv $OLDDIR/$1/* digits/$1
+mv $OLDDIR${1}/* digits/$1
+python3 fix_images.py $1
+python3 count.py
