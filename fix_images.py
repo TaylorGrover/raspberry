@@ -12,8 +12,7 @@ def get_largest_suffix(imgfiles):
     return max(suffixes)
 
 def greyscale(img):
-    grey = np.array([0.2126, 0.7152, 0.0722])
-    return np.array(img).dot(grey)
+    return np.array(img.convert("L"))
 
 def main():
     if len(sys.argv) != 2:
@@ -28,6 +27,8 @@ def main():
     # copies will be moved to the appropriate directories. 
     landing_dir = "digits/"
     temp_files = os.listdir(landing_dir + label)
+    print("%d images. Use how many?" % (len(temp_files)), end = " ")
+    counter = int(input())
     
     ## If the label isn't a valid directory, exit.
     if not os.path.isdir(landing_dir + label):
@@ -43,6 +44,8 @@ def main():
 
     ## The numeric suffix + 1 will be the starting position of the new images
     for tmp in temp_files:
+        if counter == 0:
+            sys.exit(0)
         numeric_suffix += 1
         with Image.open(landing_dir + label + "/" + tmp) as raw_img:
             grey_array = greyscale(raw_img)
@@ -53,6 +56,7 @@ def main():
         os.remove(landing_dir + label + "/" + tmp)
         # Prevent program crashing on mobile device
         time.sleep(.01)
+        counter -= 1
 
 if __name__ == "__main__":
     main()
