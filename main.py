@@ -1,7 +1,7 @@
 from functions import*
 import numpy as np
 import sys
-np.set_printoptions(linewidth=200)
+np.set_printoptions(linewidth = 200)
 from extract import *
 from neural_network import NeuralNetwork
 
@@ -12,7 +12,7 @@ clip_threshold = .01
 eta = .3
 decay = 0
 architecture = [784, 80, 10]
-activations = ["sigmoid", "softargmax"]
+activations = ["nrelu", "softargmax"]
 
 np.random.seed(1)
 nn = NeuralNetwork(architecture, activations)
@@ -26,7 +26,7 @@ nn.show_gradient = False
 nn.save_wb = True
 nn.use_diff_eq = True
 
-training_images, training_labels, validation_images, validation_labels, testing_images, testing_labels = get_tvt()
+training_images, training_labels, validation_images, validation_labels, testing_images, testing_labels = get_noisy_mnist()
 if len(sys.argv) == 3:
    wb_filename = sys.argv[1]
    nn.set_wb(wb_filename)

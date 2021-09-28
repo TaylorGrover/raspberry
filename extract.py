@@ -39,6 +39,8 @@ def get_tvt(tr_frac = 0.8):
     zipped = list(zip(inputs, labels))
     np.random.shuffle(zipped)
     inputs, outputs = zip(*zipped)
+    inputs = list(inputs)
+    outputs = list(outputs)
     tr_end_seg = int(tr_frac * len(inputs))
     val_end_seg = int((tr_end_seg + len(inputs)) / 2)
     tr_inputs = inputs[0 : tr_end_seg]
@@ -47,6 +49,21 @@ def get_tvt(tr_frac = 0.8):
     val_outputs = outputs[tr_end_seg : val_end_seg]
     te_inputs = inputs[val_end_seg : len(inputs)]
     te_outputs = outputs[val_end_seg : len(outputs)]
+    return tr_inputs, tr_outputs, val_inputs, val_outputs, te_inputs, te_outputs
+
+## Combine the makeshift and MNIST datasets (Experimental)
+def get_combination(mnist_test = False):
+    tr_inputs, tr_outputs, val_inputs, val_outputs, te_inputs, te_outputs = get_tvt()
+    print(type(tr_inputs))
+    tr_mnist_inputs, tr_mnist_outputs, val_mnist_inputs, val_mnist_outputs = get_training_and_validation()
+    tr_inputs.extend(tr_mnist_inputs)
+    tr_outputs.extend(tr_mnist_outputs)
+    val_inputs.extend(val_mnist_inputs)
+    val_outputs.extend(val_mnist_outputs)
+    if mnist_test:
+        te_mnist_inputs, te_mnist_outputs = get_testing_images()
+        te_inputs.extend(te_mnist_inputs)
+        te_outputs.extend(te_mnist_outputs)
     return tr_inputs, tr_outputs, val_inputs, val_outputs, te_inputs, te_outputs
 
 """
@@ -73,23 +90,27 @@ def bytes_to_int(byte_data):
 
 # This takes the bytes of the ubyte image file and first finds the total number
 # of images to extract.
-def get_images_array(image_filename):
+def get_images_array(image_filename, inverted = True):
     image_bytes = read_bytes(image_filename)
     images = []
     num_images = bytes_to_int(image_bytes[4 : 8])
     rows = bytes_to_int(image_bytes[8 : 12])
     cols = bytes_to_int(image_bytes[12 : 16])
     for i in range(num_images):
-        images.append(np.array(bytearray(image_bytes[16 + i * rows * cols : 16 + rows * cols * (i + 1)])) / (255) )
+        array = np.array(bytearray(image_bytes[16 + i * rows * cols : 16 + rows * cols * (i + 1)])) / 255
+        if inverted:
+            images.append(1 - array)
+        else:
+            images.append(array)
     return images
 
 """
 Determine how to split the training and validation images
 """
-def get_training_and_validation(training_count = 50000):
+def get_training_and_validation(training_count = 50000, inverted = True):
     if 0 >= training_count or training_count >= 60000:
         raise ValueError("Training image count must be between 0 and 60000.")
-    images = get_images_array(directory + training_image_filename)
+    images = get_images_array(directory + training_image_filename, inverted)
     labels = get_labels(directory + training_labels_filename)
     training_images = images[0 : training_count]
     training_labels = labels[0 : training_count]
@@ -97,8 +118,8 @@ def get_training_and_validation(training_count = 50000):
     validation_labels = labels[training_count : 60000]
     return training_images, training_labels, validation_images, validation_labels
 
-def get_testing_images():
-    return get_images_array(directory + testing_image_filename), get_labels(directory + testing_labels_filename)
+def get_testing_images(inverted = True):
+    return get_images_array(directory + testing_image_filename, inverted), get_labels(directory + testing_labels_filename)
 
 # Get the labels corresponding to the images
 def get_labels(label_filename):
@@ -144,3 +165,14 @@ def scale_image(imagefile):
     with Image.open(imagefile) as img:
         rescaled = img.resize((28, 28))
         return rescaled
+
+def invert(image_array):
+    for i in range(len(image_array)):
+        image_array[i] = 1 - image_array[i]
+    return image_array
+
+## Invert the images (1 - image)
+def get_noisy_mnist():
+    ti, tl, vi, vl = get_training_and_validation()
+    tei, tel = get_testing_images()
+    return ti, tl, vi, vl, tei, tel
