@@ -16,6 +16,9 @@ def get_image_array(filename):
     return arr
 
 def main():
-    pass
-__name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Need path argument.")
+        sys.exit(1)
+    if not os.path.isdir("data/greyscale/" + )
+if __name__ == "__main__":
     main()

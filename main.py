@@ -11,8 +11,8 @@ batch_size = 20
 clip_threshold = .01
 eta = .3
 decay = 0
-architecture = [784, 80, 10]
-activations = ["nrelu", "softargmax"]
+architecture = [784, 20, 10]
+activations = ["sigmoid", "softargmax"]
 
 np.random.seed(1)
 nn = NeuralNetwork(architecture, activations)
@@ -23,10 +23,12 @@ nn.use_clipping = False
 nn.use_dropout = False
 nn.use_L2 = False
 nn.show_gradient = False
-nn.save_wb = True
+nn.save_wb = False
 nn.use_diff_eq = True
 
-training_images, training_labels, validation_images, validation_labels, testing_images, testing_labels = get_noisy_mnist()
+#training_images, training_labels, validation_images, validation_labels, testing_images, testing_labels = get_noisy_mnist()
+training_images, training_labels, validation_images, validation_labels = get_training_and_validation(inverted = False)
+testing_images, testing_labels = get_testing_images(inverted = False)
 if len(sys.argv) == 3:
    wb_filename = sys.argv[1]
    nn.set_wb(wb_filename)

@@ -28,7 +28,7 @@ class Application(tk.Frame):
                     self.images.append(np.array(img))
 
     def set_prev(self, event = None):
-        self.index -= 2
+        self.index -= 1
         self._update_image()
 
     def set_next(self, event = None):
@@ -46,7 +46,7 @@ class Application(tk.Frame):
 
     def _update_image(self):
         self.index %= len(self.images)
-        print(self.paths[self.index])
+        print(self.index)
         img = ImageTk.PhotoImage(Image.fromarray(self.images[self.index]).resize((256, 256), Image.BICUBIC))
         self.panel.configure(image = img)
         self.panel.image = img

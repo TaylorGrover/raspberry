@@ -1,7 +1,7 @@
 import numpy as np
 import os
 import PIL.Image as Image
-from scipy.dimage import rotate
+from scipy.ndimage import rotate
 import sys
 import time
 
@@ -51,9 +51,12 @@ def main():
         with Image.open(landing_dir + label + "/" + tmp) as raw_img:
             grey_array = greyscale(raw_img)
             resized_img = Image.fromarray(grey_array).resize((28, 28), Image.BICUBIC)
+            # Prevent unexpected rotation
+            resized_img = rotate(resized_img, -90)
             name = "data/greyscale/" + label + "/" + label + "_" + str(numeric_suffix) + ".png"
             print(name)
             resized_img.convert("RGB").save(name)
+
         os.remove(landing_dir + label + "/" + tmp)
         # Prevent program crashing on mobile device
         time.sleep(.01)
