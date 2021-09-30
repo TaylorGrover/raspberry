@@ -1,6 +1,7 @@
 import numpy as np
 import os
 import PIL.Image as Image
+from scipy.dimage import rotate
 import sys
 import time
 
