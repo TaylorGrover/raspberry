@@ -20,4 +20,5 @@ Potential issues with training on makeshift dataset:
 		- Image capture distance
 		- Digit shading
 
-Will likely combine shitty data set with MNIST and see what happens.
+Assume all images are erroneously rotated counterclockwise by 90 degrees. 
+Perform 90 degree clockwise rotation before adding them to list of input images.

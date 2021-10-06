@@ -15,6 +15,7 @@ TODO: Activation function derivatives as differential equations in terms of the 
    In the first case, it's only necessary to preserve the activated layers to compute the gradient, but the latter requires the 
    weighted sum (inactivated)
 TODO: Organize boolean switches (use_diff_eq, save_wb, show_cost, test_validation, dropout, L1, L2)
+TODO: Inverted inputs harder to train for some raisin
 """
 class NeuralNetwork:
    def __init__(self, architecture = [], activations = [], wb_filename = ""):
@@ -169,7 +170,7 @@ class NeuralNetwork:
       if self.save_wb:
          accuracy = self.test([tstd, tstl])
          filename = self._generate_filename(accuracy)
-         self.save_model(filename)
+         self.save_model(filename, inverted = (np.round(np.mean(td) >= 1)))
          if self.show_cost:
             self.plot_cost(filename)
 
@@ -300,7 +301,7 @@ class NeuralNetwork:
    """
    Put the weights and biases into an array, then save them to a json file.
    """
-   def save_model(self, param_file):
+   def save_model(self, param_file, inverted = True):
       wb = [[], []]
       for w in self.weights:
          wb[0].append(w.tolist())
@@ -308,5 +309,7 @@ class NeuralNetwork:
          wb[1].append(b.tolist())
       if not os.path.isdir("wb"):
          os.mkdir("wb")
+      if inverted:
+         param_file = param_file.replace(".json", "_inverted.json")
       with open("wb/" + param_file, "w") as f:
          json.dump(wb, f)

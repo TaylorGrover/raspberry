@@ -1,7 +1,9 @@
+import cv2
 import json
 import numpy as np
 import os
 import PIL.Image as Image
+import sys
 
 ## This way the input, validation, and testing data are shuffled the same way 
 # every time.
@@ -14,7 +16,7 @@ def get_label_vector(directory):
     label[digit] = 1
     return label
 
-## Load all images
+## Load all images. Assumes 90 clockwise rotation must be performed
 def load_from_images():
     dirpath = "data/greyscale/"
     image_vectors = []
@@ -24,10 +26,13 @@ def load_from_images():
         imgdir = dirpath + directory + "/"
         for imgfile in imgfiles:
             with Image.open(imgdir + imgfile) as img:
-                image_vectors.append(np.array(img.convert("L")).flatten() / 255)
+                greyscale_matrix = np.array(img.convert("L"))
+                greyscale_matrix_rotated = cv2.rotate(greyscale_matrix, cv2.ROTATE_90_CLOCKWISE)
+                greyscale_vector = greyscale_matrix_rotated.flatten()
+                greyscale_vector_norm = greyscale_vector / 255
+                image_vectors.append(greyscale_vector_norm)
                 label_vectors.append(get_label_vector(directory))
     return image_vectors, label_vectors
-
 
 ## Split images into training, testing and validation
 # the training data should be around 80% of the whole data set.
