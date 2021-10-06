@@ -71,6 +71,19 @@ def get_combination(mnist_test = False):
         te_outputs.extend(te_mnist_outputs)
     return tr_inputs, tr_outputs, val_inputs, val_outputs, te_inputs, te_outputs
 
+def get_black_and_white():
+    ti, tl, vi, vl = get_training_and_validation(inverted = True)
+    tii, tli, vii, vli = get_training_and_validation(inverted = False)
+    tei, tel = get_testing_images(inverted = True)
+    teii, teli = get_testing_images(inverted = False)
+    ti.extend(tii)
+    tl.extend(tli)
+    vi.extend(vii)
+    vl.extend(vli)
+    tei.extend(teii)
+    tel.extend(teli)
+    return ti, tl, vi, vl, tei, tel
+
 """
 Functions for retrieving the images and labels from the MNIST binary files dataset.
 """
