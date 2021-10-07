@@ -1,8 +1,8 @@
 from functions import *
 import json
-import matplotlib as mpl
-mpl.use("TkAgg")
-import matplotlib.pyplot as plt
+#import matplotlib as mpl
+#mpl.use("TkAgg")
+#import matplotlib.pyplot as plt
 import numpy as np
 #np.seterr(all="raise")
 import os
@@ -171,8 +171,8 @@ class NeuralNetwork:
          accuracy = self.test([tstd, tstl])
          filename = self._generate_filename(accuracy)
          self.save_model(filename, inverted = (np.round(np.mean(td) >= 1)))
-         if self.show_cost:
-            self.plot_cost(filename)
+         #if self.show_cost:
+         #   self.plot_cost(filename)
 
    """ 
    inputs is a batch matrix containing input row vectors. Backprop feeds the inputs matrix to the network, 
