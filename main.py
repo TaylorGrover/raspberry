@@ -17,6 +17,8 @@ import math
 # DIGIT map as array of array ,
 #so that arrSeg[0] shows 0, arrSeg[1] shows 1, etc
 ## Constants
+delay = .1 # delay between digits refresh
+display_list = [24,25,8,7,1,12,16] # define GPIO ports to use
 arrSeg = [[0,0,0,0,0,0,1],\
           [1,0,0,1,1,1,1],\
           [0,0,1,0,0,1,0],\
@@ -61,10 +63,10 @@ def switch_func(value, x):
 # --------------------------------------------------------------------
 
 def greyscale(img):
-    return np.array(img.convert("L"))
+    return img.convert("L")
 
 def shrink_image(img):
-    return img.resize(28, 28)
+    return img.resize((28, 28), Image.BICUBIC)
 
 def showDisplay(digit):
  for i in range(0, 4): #loop on 4 digits selectors (from 0 to 3 included)
@@ -92,7 +94,6 @@ def splitToDisplay (toDisplay): # splits string to digits to display
 def setup_GPIO():
     # Use BCM GPIO references instead of physical pin numbers
     GPIO.setmode(GPIO.BCM)
-    display_list = [24,25,8,7,1,12,16] # define GPIO ports to use
     #disp.List ref: A ,B ,C,D,E,F ,G
     GPIO.setwarnings(False)
     for pin in display_list:
@@ -117,8 +118,6 @@ def main():
     wb_filename = sys.argv[1]
     camera = picamera.PiCamera()
 
-    delay = 0.005 # delay between digits refresh
-
     # Set all pins as output
     setup_GPIO()
 
@@ -127,8 +126,8 @@ def main():
 
     nn = NeuralNetwork(wb_filename = wb_filename)
     imgdir = "rasp_images/"
+    imgpath = imgdir + "image.jpg"
     while True:
-        imgpath = imgdir + "image.jpg"
         camera.capture(imgpath)
         with Image.open(imgpath) as img:
             high_contrast_img = increase_contrast(img)
@@ -137,9 +136,11 @@ def main():
             img_array = (np.array(little_img) / 255).flatten()
             prediction = nn.feed(img_array)
             index = prediction.argmax()
+            print(prediction)
             x = index
             toDisplay = switch_func(index,x)
-            time.sleep(1)
+            showDisplay(splitToDisplay(toDisplay))
+            time.sleep(0.01)
     
     
     ## Just for debugging
