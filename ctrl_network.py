@@ -29,9 +29,9 @@ nn.show_gradient = False
 nn.save_wb = True
 nn.use_diff_eq = True
 
-#training_images, training_labels, validation_images, validation_labels, testing_images, testing_labels = get_noisy_mnist()
-training_images, training_labels, validation_images, validation_labels = get_training_and_validation(inverted = inverted)
-testing_images, testing_labels = get_testing_images(inverted = inverted)
+training_images, training_labels, validation_images, validation_labels, testing_images, testing_labels = get_noisy_mnist()
+#training_images, training_labels, validation_images, validation_labels = get_training_and_validation(inverted = inverted)
+#testing_images, testing_labels = get_testing_images(inverted = inverted)
 #training_images, training_labels, validation_images, validation_labels, testing_images, testing_labels = get_black_and_white()
 if len(sys.argv) == 3:
    wb_filename = sys.argv[1]

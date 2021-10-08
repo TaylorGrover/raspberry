@@ -189,8 +189,19 @@ def invert(image_array):
         image_array[i] = 1 - image_array[i]
     return image_array
 
+def apply_noise(image_array, variability = 1):
+    sd = variability * np.random.random()
+    image_array += np.random.normal(0, sd, image_array.shape)
+    image_array = np.clip(image_array, 0, 1)
+    return image_array
+
 ## Invert the images (1 - image)
-def get_noisy_mnist():
-    ti, tl, vi, vl = get_training_and_validation()
-    tei, tel = get_testing_images()
+def get_noisy_mnist(variability = .9):
+    ti, tl, vi, vl, tei, tel = get_black_and_white()
+    for i in range(len(ti)):
+        ti[i] = apply_noise(ti[i], variability)
+    for i in range(len(vi)):
+        vi[i] = apply_noise(vi[i], variability)
+    for i in range(len(tei)):
+        tei[i] = apply_noise(tei[i], variability)
     return ti, tl, vi, vl, tei, tel
