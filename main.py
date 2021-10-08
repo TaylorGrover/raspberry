@@ -117,6 +117,8 @@ def main():
 
     wb_filename = sys.argv[1]
     camera = picamera.PiCamera()
+    camera.contrast = 100
+    camera.resolution = (1024, 1024)
 
     # Set all pins as output
     setup_GPIO()
@@ -127,28 +129,27 @@ def main():
     nn = NeuralNetwork(wb_filename = wb_filename)
     imgdir = "rasp_images/"
     imgpath = imgdir + "image.jpg"
-    while True:
-        camera.capture(imgpath)
-        with Image.open(imgpath) as img:
-            high_contrast_img = increase_contrast(img)
-            grey_img = greyscale(high_contrast_img)
-            little_img = shrink_image(grey_img)
-            img_array = (np.array(little_img) / 255).flatten()
-            prediction = nn.feed(img_array)
-            index = prediction.argmax()
-            print(prediction)
-            x = index
-            toDisplay = switch_func(index,x)
-            showDisplay(splitToDisplay(toDisplay))
-            time.sleep(0.01)
+    try:
+        camera.start_preview()
+        while True:
+            camera.capture(imgpath)
+            with Image.open(imgpath) as img:
+                high_contrast_img = increase_contrast(img)
+                grey_img = greyscale(high_contrast_img)
+                little_img = shrink_image(grey_img)
+                img_array = (np.array(little_img) / 255).flatten()
+                prediction = nn.feed(img_array)
+                index = prediction.argmax()
+                print(prediction)
+                x = index
+                toDisplay = switch_func(index,x)
+                showDisplay(splitToDisplay(toDisplay))
+                time.sleep(0.01)
+    except KeyboardInterrupt:
+        GPIO.cleanup()
+        camera.stop_preview()
+        sys.exit(0)
     
-    
-    ## Just for debugging
-    if len(sys.argv) == 2:
-        index = int(sys.argv[1])
-    else:
-        index = 0
-
 
 if __name__ == "__main__":
     main()
