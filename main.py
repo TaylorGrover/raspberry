@@ -1,6 +1,6 @@
 from neural_network import *
-import cv2
-print("Imported cv2")
+#import cv2
+#print("Imported cv2")
 import picamera
 print("Imported picamera")
 import PIL.Image as Image
