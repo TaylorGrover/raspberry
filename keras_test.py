@@ -2,13 +2,20 @@ import numpy as np
 import pandas as pd
 from keras.datasets import mnist
 
+## Constants
+BATCH_SIZE = 64
+EPOCHS = 5
+
 def add_noise(img):
-    VARIABILITY = 50
+    VARIABILITY = .8
     deviation = VARIABILITY * np.random.random()
     noise = np.random.normal(0, deviation, img.shape)
     img += noise
-    np.clip(img, 0., 255.)
+    np.clip(img, 0., 1.)
     return img
+
+def process(img):
+    return 1 - add_noise(img)
 
 (X_train, y_train), (X_test, y_test) = mnist.load_data()
 
@@ -82,15 +89,15 @@ train_gen = ImageDataGenerator(rotation_range = 8,
                                width_shift_range = 0.08,
                                shear_range = 0.3,
                                height_shift_range = 0.08,
-                               zoom_range = 0.08,
-                               preprocessing_function = add_noise)
+                               zoom_range = 0.2,
+                               preprocessing_function = process)
 test_gen = ImageDataGenerator()
 
-training_set = train_gen.flow(X_train, y_train, batch_size = 64)
-test_set = train_gen.flow(X_test, y_test, batch_size = 64)
+training_set = train_gen.flow(X_train, y_train, batch_size = BATCH_SIZE)
+test_set = train_gen.flow(X_test, y_test, batch_size = BATCH_SIZE)
 
 classifier.fit_generator(training_set,
-                         steps_per_epoch = 60000 // 64,
+                         steps_per_epoch = 60000 // BATCH_SIZE,
                          validation_data = test_set,
-                         validation_steps = 10000 // 64,
-                         epochs = 1)
+                         validation_steps = 10000 // BATCH_SIZE,
+                         epochs = EPOCHS)

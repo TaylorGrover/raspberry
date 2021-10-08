@@ -1,6 +1,6 @@
 from neural_network import *
-#import cv2
-#print("Imported cv2")
+import cv2
+print("Imported cv2")
 import picamera
 print("Imported picamera")
 import PIL.Image as Image
@@ -91,6 +91,18 @@ def splitToDisplay (toDisplay): # splits string to digits to display
  while "." in arrToDisplay: arrToDisplay.remove(".") # array items containing dot char alone are removed
  return arrToDisplay
 
+def get_bgSubtr():
+    bgdir = "data/bgimages/"
+    imgfiles = os.listdir(bgdir)
+    with Image.open(bgdir + imgfiles[0]) as img:
+        arr = np.zeros(np.array(img).shape)
+    for bgfile in imgfiles:
+        with Image.open(bgdir + bgfile) as img:
+            arr += np.array(img)
+    arr = arr / len(imgfiles)
+    arr = arr.astype(np.uint8)
+    return cv2.BackgroundSubtractor(np.array(Image.fromarray(arr).convert("L").resize((28, 28), Image.BICUBIC)))
+
 def setup_GPIO():
     # Use BCM GPIO references instead of physical pin numbers
     GPIO.setmode(GPIO.BCM)
@@ -104,7 +116,8 @@ def setup_GPIO():
     GPIO.setwarnings(True)
 
 ## Takes PIL.Image object
-def increase_contrast(img):
+def process(img):
+    bgSubtr = get_bgSubtr()
     return img
 
 
@@ -116,9 +129,13 @@ def main():
         sys.exit(1)
 
     wb_filename = sys.argv[1]
+
     camera = picamera.PiCamera()
     camera.contrast = 100
     camera.resolution = (1024, 1024)
+
+    # Get background image subtractor
+
 
     # Set all pins as output
     setup_GPIO()
@@ -134,8 +151,8 @@ def main():
         while True:
             camera.capture(imgpath)
             with Image.open(imgpath) as img:
-                high_contrast_img = increase_contrast(img)
-                grey_img = greyscale(high_contrast_img)
+                processed_img = process(img)
+                grey_img = greyscale(processed_img)
                 little_img = shrink_image(grey_img)
                 img_array = (np.array(little_img) / 255).flatten()
                 prediction = nn.feed(img_array)
