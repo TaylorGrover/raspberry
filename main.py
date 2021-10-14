@@ -118,9 +118,12 @@ def setup_GPIO():
 
 ## Takes PIL.Image object
 def process(img):
-    enhancer = ImageEnhance.Contrast(img)
+    grey_img = greyscale(img)
+    little_img = shrink_image(grey_img)
+    enhancer = ImageEnhance.Contrast(little_img)
     enhanced = enhancer.enhance(5)
-    return enhanced
+    arr = np.round((np.array(enhanced) / 255).flatten())
+    return arr
 
 
 ### In main loop take pictures every few seconds. Prepare image then send to neural network.
@@ -153,10 +156,7 @@ def main():
         while True:
             camera.capture(imgpath)
             with Image.open(imgpath) as img:
-                processed_img = process(img)
-                grey_img = greyscale(processed_img)
-                little_img = shrink_image(grey_img)
-                img_array = (np.array(little_img) / 255).flatten()
+                img_array = process(img)
                 prediction = nn.feed(img_array)
                 index = prediction.argmax()
                 print(prediction)
