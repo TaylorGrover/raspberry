@@ -3,6 +3,7 @@ import cv2
 print("Imported cv2")
 import picamera
 print("Imported picamera")
+from PIL import ImageEnhance
 import PIL.Image as Image
 print("Imported PIL.Image")
 import RPi.GPIO as GPIO
@@ -117,8 +118,9 @@ def setup_GPIO():
 
 ## Takes PIL.Image object
 def process(img):
-    bgSubtr = get_bgSubtr()
-    return img
+    enhancer = ImageEnhance.Contrast(img)
+    enhanced = enhancer.enhance(5)
+    return enhanced
 
 
 ### In main loop take pictures every few seconds. Prepare image then send to neural network.
@@ -131,7 +133,7 @@ def main():
     wb_filename = sys.argv[1]
 
     camera = picamera.PiCamera()
-    camera.contrast = 100
+    camera.contrast = 50
     camera.resolution = (1024, 1024)
 
     # Get background image subtractor

@@ -9,13 +9,13 @@ from neural_network import NeuralNetwork
 inverted = True
 
 ### Hyperparameters
-epochs = 20
+epochs = 1
 batch_size = 20
 clip_threshold = .01
 eta = .3
-decay = 0.0001
-architecture = [784, 60, 10]
-activations = ["sigmoid", "softargmax"]
+decay = 0.001
+architecture = [784, 20, 10]
+activations = ["relu", "softargmax"]
 
 np.random.seed(1)
 nn = NeuralNetwork(architecture, activations)
@@ -23,10 +23,10 @@ nn.cost = cross_entropy
 nn.cost_deriv = cross_entropy_deriv
 nn.test_validation = True
 nn.use_clipping = False
-nn.use_dropout = False
+nn.use_dropout = True
 nn.use_L2 = True
 nn.show_gradient = False
-nn.save_wb = True
+nn.save_wb = False
 nn.use_diff_eq = True
 
 training_images, training_labels, validation_images, validation_labels, testing_images, testing_labels = get_noisy_mnist()
